@@ -16,6 +16,6 @@ export default defineConfig({
         secure: false,
         rewrite: (path) => path.replace(/^\/boltic-api/, ''),
       },
-    },
+    }, 
   },
 })
