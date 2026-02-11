@@ -10,19 +10,20 @@ const EmpSignupPage = () => {
     name: '',
     userId: '', 
     email: '',
-    phoneNo: '', // 👈 UPDATED: Matches database column name
-    password: ''
+    phoneNo: '', 
+    password: '',
+    isAdmin: false // 👈 NEW: Default is false (Employee)
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Handle Checkbox vs Text Input
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
-  // Special handler for phone to allow only numbers and max length
   const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    const value = e.target.value.replace(/\D/g, ''); 
     if (value.length <= 10) { 
-        // 👈 UPDATED: Set 'phoneNo'
         setFormData({ ...formData, phoneNo: value });
     }
   };
@@ -32,22 +33,25 @@ const EmpSignupPage = () => {
     setLoading(true);
 
     try {
-      // 1. Format phone number: Combine prefix +91 with the user input
-      // Result: "+91 9876543210"
+      // 1. Format phone number: "+91 9876543210"
       const formattedPhone = `+91 ${formData.phoneNo.replace(/(\d{5})/g, '$1 ').trim()}`; 
 
-      // 2. Prepare the payload
+      // 2. Prepare the payload (Matches your request exactly)
       const payload = {
-        ...formData,
-        phoneNo: formattedPhone, // 👈 UPDATED: Sending key 'phoneNo'
-        isAdmin: false,
+        name: formData.name,
+        email: formData.email,
+        userId: formData.userId,
+        isAdmin: formData.isAdmin, // 👈 Sends true or false
+        phoneNo: formattedPhone,
+        password: formData.password,
+        // Optional fields (if your DB needs them initialized)
         task: "",
         deadline: ""
       };
 
-      console.log("Sending Payload to Boltic:", payload);
+      console.log("🚀 Sending Payload to Boltic:", payload);
 
-      const response = await fetch('https://asia-south1.workflow.boltic.app/76d963fd-aef1-4d8d-aae4-a7bb106cd4cb', {
+      const response = await fetch('https://asia-south1.workflow.boltic.app/40699f36-8d92-4339-9e10-1d2b9fe3258c', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +60,7 @@ const EmpSignupPage = () => {
       });
 
       if (response.ok) {
-        alert("🎉 Account created successfully! Redirecting to login...");
+        alert(`🎉 Account created! Please login as ${formData.isAdmin ? 'Admin' : 'Employee'}.`);
         navigate('/login');
       } else {
         alert("⚠️ Signup failed. Please try again.");
@@ -73,10 +77,10 @@ const EmpSignupPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Employee Registration
+          Create Account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Create an account to join the workspace
+          Join the Chaser Agent Workspace
         </p>
       </div>
 
@@ -113,7 +117,7 @@ const EmpSignupPage = () => {
                   name="userId"
                   type="text"
                   required
-                  placeholder="e.g. 123"
+                  placeholder="e.g. 101"
                   value={formData.userId}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -121,23 +125,22 @@ const EmpSignupPage = () => {
               </div>
             </div>
 
-            {/* 👇 Phone Number Field */}
+            {/* Phone Number Field */}
             <div>
               <label htmlFor="phoneNo" className="block text-sm font-medium text-gray-700">
                 Phone Number
               </label>
               <div className="mt-1 flex rounded-md shadow-sm">
-                {/* Fixed +91 Prefix */}
                 <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
                   +91
                 </span>
                 <input
                   id="phoneNo"
-                  name="phoneNo" // 👈 Name attribute updated
+                  name="phoneNo"
                   type="tel"
                   required
-                  placeholder="85 9126 9430"
-                  value={formData.phoneNo} // 👈 Value binding updated
+                  placeholder="98765 43210"
+                  value={formData.phoneNo} 
                   onChange={handlePhoneChange}
                   className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
@@ -178,6 +181,21 @@ const EmpSignupPage = () => {
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
+            </div>
+
+            {/* 👇 ADMIN CHECKBOX (NEW) */}
+            <div className="flex items-center">
+              <input
+                id="isAdmin"
+                name="isAdmin"
+                type="checkbox"
+                checked={formData.isAdmin}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="isAdmin" className="ml-2 block text-sm text-gray-900 font-medium">
+                Register as Admin?
+              </label>
             </div>
 
             {/* Submit Button */}

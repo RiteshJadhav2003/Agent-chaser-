@@ -1,4 +1,4 @@
-// src/pages/EmpLoginPage.jsx
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ const EmpLoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('https://asia-south1.workflow.boltic.app/37e87073-5471-4da0-b24c-8f2443c24c4e', {
+      const response = await fetch('https://asia-south1.workflow.boltic.app/9e9876c0-5aa2-4856-8ea0-13a2febc1c24', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -29,29 +29,27 @@ const EmpLoginPage = () => {
       const result = await response.json();
       console.log("Full Boltic Response:", result);
 
-      // Check if data exists and is not empty
+      
       if (result.data && Array.isArray(result.data) && result.data.length > 0) {
         
         const user = result.data[0]; // Get the first user object
         console.log("User Found:", user);
         
-        // Save user details to LocalStorage
+        
         localStorage.setItem('user', JSON.stringify(user));
         
-        // ---------------------------------------------------------
-        // 👇 UPDATED LOGIC: Check isAdmin Role and Redirect
-        // ---------------------------------------------------------
+       
         if (user.isAdmin === true) {
             alert(`✅ Welcome Admin: ${user.name}`);
-            navigate('/admin-dashboard'); // Redirect to Admin Dashboard
+            navigate('/admin-dashboard'); 
         } else {
             alert(`✅ Login Successful! Welcome ${user.name}`);
-            navigate('/employee-dashboard'); // Redirect to Employee Dashboard
+            navigate('/employee-dashboard'); 
         }
         return;
       }
 
-      // If we get here, 'data' was empty (User not found)
+     
       alert("❌ Login Failed: User not found or Password incorrect.");
 
     } catch (error) {
@@ -77,7 +75,7 @@ const EmpLoginPage = () => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             
-            {/* Email Field */}
+         
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
@@ -96,7 +94,7 @@ const EmpLoginPage = () => {
               </div>
             </div>
 
-            {/* Password Field */}
+          
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
@@ -115,7 +113,7 @@ const EmpLoginPage = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
+           
             <div>
               <button
                 type="submit"
@@ -129,7 +127,7 @@ const EmpLoginPage = () => {
             </div>
           </form>
 
-          {/* Link to Signup */}
+         
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

@@ -4,7 +4,18 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    react(),          // 👈 REQUIRED
+    react(),
     tailwindcss(),
   ],
+  // 👇 THIS FIXES THE CORS ERROR
+  server: {
+    proxy: {
+      '/boltic-api': {
+        target: 'https://asia-south1.api.boltic.io', // The actual server
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/boltic-api/, ''),
+      },
+    },
+  },
 })
