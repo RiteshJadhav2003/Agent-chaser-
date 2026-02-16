@@ -1,0 +1,18 @@
+app: bolticmasterlist
+primary_region: asia-south1
+
+# Use the repo's Dockerfile to build the deployable image
+build:
+  dockerfile: Dockerfile
+
+# Runtime env (non-secrets only)
+env:
+  NODE_ENV: "production"
+  PORT: "8080"
+
+# SFTP Configuration - Set these as environment variables/secrets in Boltic platform:
+# SFTP_HOST=151.253.146.58
+# SFTP_PORT=2230
+# SFTP_USERNAME=bolticsftp
+# SFTP_PASSWORD=4SW7$s9Lz51
+# SFTP_BASE_DIR is optional - if not set, files will be uploaded to user's home directory
